@@ -1,20 +1,19 @@
-/*****************************************************************
- * ledsw2.c
- * Adapted by Peter Loux Sr, from the original ledsw1.c by
- * Robert B. Reese, Bryan A. Jones, and J. W. Bruce (2008)
- * Mississippi State University, ECE3724 class usage only 
- *****************************************************************
- * Demonstrates using an FSM for a LED/switch/button IO problem.
- *****************************************************************
- * Start: The LED is off 
- * After a button press and release, the LED is turned on. 
- * After another press and release:
- *  if switch = 0, go back to start
- *  if switch = 1, blink
- * After 5 blinks (10 toggles), go to start
- * If button is pressed before 5 blinks, turn LED on
- * When button is released, go back to start 
- *****************************************************************/
+/****************************************************************
+* Name
+* ECE3724 - Section __
+* Lab #7 - lab7.c
+* Date
+*****************************************************************
+* Uses n state machine for a LED/switch/button IO problem.
+*****************************************************************
+* Start: 
+* 
+* 
+* 
+* 
+* 
+*		 
+*****************************************************************/
 
 #include <stdio.h>
 #include "pic24_all.h"
@@ -44,21 +43,13 @@ void config_SW()  {
 // names of states
 typedef enum  { 
 	RELEASED_1,
-	PRESSED_1,
-	RELEASED_2,
-	PRESSED_2,
-	RELEASED_3,
-	PRESSED_3
+
 } state_t;
 
 // state descriptions
 const char* apsz_state_names[] = {		
-	"RELEASED_1 - LED is off",
-	"PRESSED_1 - LED is still off",
-	"RELEASED_2 - LED is on",
-	"PRESSED_2 - LED is still on",
-	"RELEASED_3 - LED blinks 5x or until PB press",
-	"PRESSED_3 - LED is on",
+	"RELEASED_1 - LED is ____",
+
 };
 
 // prints state descriptions
@@ -77,55 +68,11 @@ void update_state(void) {
 
 	switch (e_state) {
 		case RELEASED_1:
-			LED1 = 0;
-			if (PB_PRESSED()) {
-				e_state = PRESSED_1;
-			}
-			break;
 
-		case PRESSED_1:
-			if (PB_RELEASED()) {
-				e_state = RELEASED_2;
-			}
 			break;
+		
 
-		case RELEASED_2:
-			LED1 = 1;
-			if (PB_PRESSED()) {
-				e_state = PRESSED_2;
-			}
-			break;
-
-		case PRESSED_2:
-			if (PB_RELEASED() && SW) {
-				u16_led_toggles = 0;	// zero counter before blinking state
-				e_state = RELEASED_3;
-			}
-			if (PB_RELEASED() && !SW) {
-				e_state = RELEASED_1;
-			}
-			break;
-
-		case RELEASED_3:
-			LED1 = !LED1;		// blink
-			u16_led_toggles++;
-			printf("toggles = %d\n", u16_led_toggles);
-			DELAY_MS(250);		// Delay to make LED blinks visible
-      		if (u16_led_toggles >= 10) {
-				e_state = RELEASED_1;
-			}
-			if (PB_PRESSED()) {
-				e_state = PRESSED_3;
-			}
-			break;
-
-		case PRESSED_3:
-			LED1 = 1;
-			if (PB_RELEASED()) {
-				e_state = RELEASED_1;
-			}
-			break;
-
+			
 		default:
 			ASSERT(0);		// something's wrong - we're not in a state
 	}
